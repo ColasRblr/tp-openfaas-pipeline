@@ -1,0 +1,14 @@
+version: 1.0
+provider:
+  name: openfaas
+  gateway: http://127.0.0.1:8080
+
+functions:
+  daily-fetcher:
+    lang: python3-http
+    handler: ./daily-fetcher
+    image: colasr/daily-fetcher:latest
+    annotations:
+      topic: orders.import
+      schedule: "0 8 * * *"
+
