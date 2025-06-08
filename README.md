@@ -1,4 +1,4 @@
-# TP OpenFaaS – Traitement de commandes pour DataRetailX (US9)
+# TP OpenFaaS – Traitement de commandes 
 
 ## Objectif
 
@@ -9,31 +9,33 @@ Développer une chaîne de traitement serverless en utilisant **OpenFaaS** sur K
 
 ## Technologies utilisées
 
-- Python 3 (`python3-http`)
-- OpenFaaS + faas-cli
-- SFTP
-- NATS
-- Kubernetes (Minikube)
+- Python 3 (python3-http)
+- OpenFaaS, faas-cli
+- Redis (pour les compteurs et les blocages de double-exécution)
+- NATS (broker de messages)
+- Kubernetes (via Minikube)
 
 ## Fonctions
 
 ### 1. `daily-fetcher` (planification CRON)
 
-- Déclenchée tous les jours (planifié chaque minute pour le test)
+- Déclenchée tous les jours
+- Ne s'exécute qu'une fois par jour grâce à une vérification de date dans Redis
 - Envoie un message JSON avec la date sur `orders.import` (topic NATS)
 
 ### 2. `file-transformer` (déclenchée par NATS)
 
-- Récupère `/US9/data/input.csv` via SFTP
+- Abonnée au topic NATS 'orders.import'
+- Lit un fichier CSV local `/input.csv` 
 - Applique la transformation :
   - `customers` → MAJUSCULES
   - `product` → minuscules
   - Ajoute `Processed-Date` et `process_by`
-- Envoie `/US9/depot/output.csv`
+- Sauvegarde le fichier modifié `output.csv`dans son répertoire
 
 ### 3. `status-checker` (appel HTTP)
 
-- Retourne le **nombre de fichiers dans `/US9/depot`** via SFTP
+- Retourne le **nombre de fichiers dans `/US9/depot`** grâce au compteur Redis incrémenté dans file-transformer
 
 ## Déploiement
 

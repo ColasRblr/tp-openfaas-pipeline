@@ -7,4 +7,4 @@ functions:
   status-checker:
     lang: python3-http
     handler: ./status-checker
-    image: colasr/status-checker:V3
+    image: colasr/status-checker:latest

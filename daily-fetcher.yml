@@ -11,4 +11,3 @@ functions:
     annotations:
       topic: orders.import
       schedule: "0 8 * * *"
-
