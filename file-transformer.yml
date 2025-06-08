@@ -1,3 +1,4 @@
+# file-transformer.yml
 version: 1.0
 provider:
   name: openfaas
@@ -7,6 +8,8 @@ functions:
   file-transformer:
     lang: python3-http
     handler: ./file-transformer
-    image: colasr/file-transformer:V2
+    image: colasr/file-transformer:latest
     annotations:
-      topic: orders.import
+      topic: "orders.import" 
+      com.openfaas.scale.min: "1"
+      com.openfaas.scale.max: "3"
